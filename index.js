@@ -2,14 +2,14 @@ import bodyParser from "body-parser";
 import express from "express";
 const app = express();
 
-
+import multer from "multer";
 import { connectDB } from "./config/db.js";
 
 connectDB();
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+// app.use(express.urlencoded({ extended: false }));
 import adminRouters from "./routes/admin.js";
 import productRouters from "./routes/product.js";
 

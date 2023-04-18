@@ -1,14 +1,45 @@
 import productModel from "../models/product.js";
 
 
+// export const getAllProducts = async (req, res) => {
+//   try {
+//     const allProducts = await productModel.find();
+//     res.status(200).json({ message: allProducts });
+//   } catch (err) {
+//     res.json({ error: err.message });
+//   }
+// };
 export const getAllProducts = async (req, res) => {
   try {
-    const allProducts = await productModel.find();
-    res.status(200).json({ message: allProducts });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const allProducts = await productModel.find().skip(startIndex).limit(limit);
+    const totalCount = await productModel.countDocuments();
+
+    const pagination = {};
+    if (endIndex < totalCount) {
+      pagination.next = {
+        page: page + 1,
+        limit: limit
+      };
+    }
+    if (startIndex > 0) {
+      pagination.prev = {
+        page: page - 1,
+        limit: limit
+      };
+    }
+
+    res.status(200).json({ message: allProducts, pagination });
   } catch (err) {
     res.json({ error: err.message });
   }
 };
+
 
 export const getProductById = async (req, res) => {
   try {
