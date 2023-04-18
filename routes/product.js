@@ -6,7 +6,7 @@ import {
   getAllProducts,
   addProduct
 } from "../controllers/product.js";
-// import imageHandler from '../middelwares/imageHandler.js';
+
 const router = express.Router();
 
 router.get("/", getAllProducts);
@@ -15,17 +15,5 @@ router.post("/",addProduct);
 
 router.patch("/edit/:id", editProduct);
 router.delete("/delete/:id", deleteProduct);
-
-// import multer from "multer";
-
-
-// const upload = multer({ dest: "uploads/" });
-
-// router.post("/upload", upload.single("image"), (req, res) => {
-//   res.status(200).json({ filename: req.file.filename });
-// });
-
-
-
 
 export default router;
