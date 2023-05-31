@@ -1,4 +1,6 @@
 import multer from "multer";
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
     callback(null, "uploads/");
@@ -22,18 +24,35 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
 const upload = multer({ storage, fileFilter });
 
-export default function imagehandler (req, res, next) {
+// Add single image
+export const singleImage = (req, res, next) => {
   upload.single("image")(req, res, (err) => {
     try {
       if (err) {
-        return res.status(400).json(err.message);
+        return res.json(createError(400, err.message));
       }
       req.imagePath = req.file.path;
       next();
     } catch (err) {
-      return res.status(400).json({ err: err.message });
+      return res.json(createError(400, err.message));
     }
   });
-}
+};
+
+// Add multiple images
+export const multipleImage = (req, res, next) => {
+  upload.array("image")(req, res, (err) => {
+    try {
+      if (err) {
+        return res.json(createError(400, err.message));
+      }
+      req.imagePath = req.file.path;
+      next();
+    } catch (err) {
+      return res.json(createError(400, err.message));
+    }
+  });
+};

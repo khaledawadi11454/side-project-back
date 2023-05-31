@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const adminSchema = Schema(
+const userSchema = Schema(
   {
     name: {
       type: String,
@@ -15,12 +15,17 @@ const adminSchema = Schema(
       type: String,
       required: true,
     },
+    role: {
+      type: String,
+      enum: ["freelancer", "customer", "WordPress Developer"],
+      // required: true,
+    },
   },
   {
-    collection: "Admin",
+    collection: "User",
   }
 );
 
-const Model = model("admin", adminSchema);
+const Model = model("user", userSchema);
 
 export default Model;
