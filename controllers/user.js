@@ -1,12 +1,13 @@
 import userModel from "../models/user.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+
 export const getAllUsers = async (req, res) => {
   try {
     const allUsers = await userModel.find();
     res.status(200).json({ message: allUsers });
-  } catch (err) {
-    res.json({ error: err.message });
+  } catch (error) {
+    res.json({ error: error.message });
   }
 };
 
@@ -15,40 +16,14 @@ export const getUserById = async (req, res) => {
     const user = await userModel.findById(req.params.id);
     res.status(200).json({ message: user });
   } catch (error) {
-    res.json({ error: err.message });
+    res.json({ error: error.message });
   }
 };
 
-// export const registerUser = async (req, res) => {
-//   try {
-//     const existingEmail = await userModel.findOne({ email: req.body.email });
-
-//     if (existingEmail) {
-//       return res.json({ message: "Email has been taken" });
-//     }
-
-//     const salt = await bcrypt.genSalt(10);
-//     const hash = await bcrypt.hash(req.body.password, salt);
-
-//     const newUser = new userModel({
-//       name: req.body.name,
-//       email: req.body.email,
-//       password: hash,
-//       role: req.body.role,
-//     });
-
-//     await newUser.save();
-//     res.status(200).json({ message: "User has been created successfully" });
-//   } catch (error) {
-//     res.json({ error: error.message });
-//   }
-// };
 export const registerUser = async (req, res, next) => {
   const { name, email, password, role } = req.body;
 
   try {
-    // Hash the password
-
     const user = new userModel({
       name,
       email,
@@ -71,59 +46,10 @@ export const registerUser = async (req, res, next) => {
     next(error);
   }
 };
-// export const logInUser = async (req, res) => {
-//   try {
-//     const user = await userModel.findOne({ email: req.body.email });
-
-//     if (!user) return res.status(404).json("User not found");
-
-//     const isPasswordCorrect = await bcrypt.compare(
-//       req.body.password,
-//       user.password
-//     );
-
-//     if (!isPasswordCorrect) return res.json("Incorrect email or password");
-
-//   } catch (error) {
-//     res.json({ error: err.message });
-//   }
-// };
-export const logInUser = async (req, res) => {
-  const { email, password } = req.body;
-
-  // Validate user input
-  if (!email) {
-    return res.status(400).send("Email is Required");
-  }
-  if (!password) {
-    return res.status(400).json("Password is Required");
-  }
-
-  const user = await userModel.findOne({ email });
-  if (!user) {
-    return res.status("404").json("Invalid Email");
-  }
-  const isPasswordCorrect = await user.comparePassword(pass);
-  if (!isPasswordCorrect) {
-    return res.status(402).json("Invalid Password");
-  }
-
-  // Create token
-  const token = jwt.sign(
-    { user_id: user._id, email },
-    process.env.JWT_SECRET_KEY,
-    {
-      expiresIn: "5h",
-    }
-  );
-  return res.status(200).json({ message: user });
-};
 
 export const editUser = async (req, res) => {
   try {
-    const salt = bcrypt.genSalt(10, (err) => {
-      if (err) throw err;
-    });
+    const salt = bcrypt.genSaltSync(10);
 
     const hash = bcrypt.hashSync(req.body.password, salt);
 
@@ -141,7 +67,7 @@ export const editUser = async (req, res) => {
     );
     res.status(200).json(updateUser);
   } catch (error) {
-    res.json({ error: err.message });
+    res.json({ error: error.message });
   }
 };
 
@@ -150,6 +76,29 @@ export const deleteUser = async (req, res) => {
     await userModel.findByIdAndDelete(req.params.id);
     res.status(200).json("User deleted successfully");
   } catch (error) {
-    res.json({ error: err.message });
+    res.json({ error: error.message });
   }
+};
+
+export const logInUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email) {
+      return res.status(400).send("Email is Required");
+    }
+    if (!password) {
+      return res.status(400).json("Password is Required");
+    }
+
+    const user = await userModel.findOne({ email });
+    if(!user) {
+      return res.status(404).json('User Not Found')
+    }
+
+    res.status(200).json({message: user, data:'Logged In Successfully'})
+
+  } catch (error) {
+    console.log(error);
+  }
+  // console.log('I am in here')
 };

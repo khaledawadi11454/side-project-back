@@ -1,16 +1,19 @@
 import express from "express";
-const app = express();
 import cors from "cors";
-
-import multer from "multer";
 import { connectDB } from "./config/db.js";
 
+const app = express();
 connectDB();
+app.use(cors())
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors({ origin: '*' }));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded());
+
+
+
+
+
 import userRouters from "./routes/user.js";
 
 import protfolioRouters from "./routes/portfolio.js";
@@ -30,6 +33,11 @@ app.use("/job", jobRouters);
 app.use("/request", requestRouters);
 app.use("/resource", resourceRouters);
 app.use("/event", eventRouters);
+
+
+
+
+
 app.listen(5000, () => {
   console.log("listening on port 5000");
 });
