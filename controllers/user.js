@@ -48,12 +48,11 @@ export const registerUser = async (req, res, next) => {
 
   try {
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new userModel({
       name,
       email,
-      password: hashedPassword,
+      password,
       role,
     });
     await user.save();
