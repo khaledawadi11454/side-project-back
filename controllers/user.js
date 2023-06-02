@@ -92,11 +92,12 @@ export const logInUser = async (req, res) => {
   const { email, password } = req.body;
 
   // Validate user input
-  if (!email || !password) {
-    res.status(400).send("All input is required");
+  if (!email) {
+    return res.status(400).send("Email is Required");
   }
-  // Validate if user exist in our database
-  // const user = await userModel.findOne({ email });
+  if(!password) {
+    return res.status(400).json("Password is Required")
+  }
 
   const user = await userModel.findOne({ email });
     if (!user) {
@@ -118,7 +119,7 @@ export const logInUser = async (req, res) => {
     return res.cookie("auth-token", token, {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
-    });
+    }).status(200).json({message: user});
   }
 
 export const editUser = async (req, res) => {
