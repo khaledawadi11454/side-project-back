@@ -89,13 +89,10 @@ export const registerUser = async (req, res, next) => {
 //   }
 // };
 export const logInUser = async (req, res) => {
-  // Get user input
-  console.log(req.body);
-  const email = req.body.email;
-  const password = req.body.password;
+  const { email, password } = req.body;
 
   // Validate user input
-  if (!(email && password)) {
+  if (!email || !password) {
     res.status(400).send("All input is required");
   }
   // Validate if user exist in our database
