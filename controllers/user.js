@@ -97,9 +97,17 @@ export const logInUser = async (req, res) => {
     res.status(400).send("All input is required");
   }
   // Validate if user exist in our database
-  const user = await userModel.findOne({ email });
+  // const user = await userModel.findOne({ email });
 
-  if (user && (await bcrypt.compare(password, user.password))) {
+  const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status('404').json('Invalid Email')
+    }
+    const isPasswordCorrect = await user.comparePassword(pass);
+    if (!isPasswordCorrect) {
+      return res.status(402).json("Invalid Password");
+    }
+
     // Create token
     const token = jwt.sign(
       { user_id: user._id, email },
@@ -112,11 +120,7 @@ export const logInUser = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
-
-    // user
   }
-  return res.status(400).send("Invalid Credentials");
-};
 
 export const editUser = async (req, res) => {
   try {
