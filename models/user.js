@@ -17,7 +17,7 @@ const userSchema = Schema(
     },
     role: {
       type: String,
-      enum: ["freelancer", "customer", "WordPress Developer"],
+      enum: ["freelancer", "customer", "WordPress Developer", "admin"],
       // required: true,
     },
   },
