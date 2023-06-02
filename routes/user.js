@@ -1,5 +1,4 @@
 import express from "express";
-import {verifyToken} from "../middelware/Auth.js";
 import {
   deleteUser,
   editUser,

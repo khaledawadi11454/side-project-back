@@ -1,4 +1,3 @@
-import bodyParser from "body-parser";
 import express from "express";
 const app = express();
 import cors from "cors";
@@ -9,7 +8,7 @@ import { connectDB } from "./config/db.js";
 connectDB();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({ "Access-Control-Allow-Origin": "*" }));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded());
 import userRouters from "./routes/user.js";
