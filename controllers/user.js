@@ -22,13 +22,15 @@ export const getUserById = async (req, res) => {
 
 export const registerUser = async (req, res, next) => {
   const { name, email, password, role } = req.body;
+  const salt = bcrypt.genSaltSync(10);
 
+  const hash = bcrypt.hashSync(password, salt);
   try {
     const user = new userModel({
       name,
       email,
-      password,
       role,
+      password:hash,
     });
     await user.save();
 
@@ -94,11 +96,18 @@ export const logInUser = async (req, res) => {
     if(!user) {
       return res.status(404).json('User Not Found')
     }
+    if(await bcrypt.compare(password,user.password)){
+      return res.status(401).json({success:false,message:"wrong password"})
+    }
+    const token=jwt.sign(
+      {_id:user._id,email:user.email},
+      process.env.JWT_SECRET_KEY,
+    )
 
-    res.status(200).json({message: user, data:'Logged In Successfully'})
+    res.status(200).json({message: 'Logged In Successfully', data:user,token})
 
   } catch (error) {
-    console.log(error);
+   res.status(500).send({success:false,message:"error loggin in"})
   }
   // console.log('I am in here')
 };

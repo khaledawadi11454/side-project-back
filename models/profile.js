@@ -14,7 +14,6 @@ const profileSchema = Schema(
     },
     image: {
       type: String, 
-      required:true
     },
     title: {
       type: String,
@@ -25,7 +24,7 @@ const profileSchema = Schema(
         required: true,
       }, 
       skill: {
-        type: [String],
+        type: String,
         required: true,
       }, 
       location: {
@@ -45,9 +44,9 @@ const profileSchema = Schema(
     collection: "Profile",
   }
 );
-profileSchema.pre(["find", "findone"], function () {
-    this.populate({path: "user" , model : userModel });
-  });
+// profileSchema.pre(["find", "findone"], function () {
+//     this.populate({path: "user" , model : userModel });
+//   });
   
 const Model = model("profile", profileSchema);
 
